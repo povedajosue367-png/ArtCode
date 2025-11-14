@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot WhatsApp - Asistente Programación</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --whatsapp-green: #25D366;
+            --whatsapp-dark: #075E54;
+            --whatsapp-light: #128C7E;
+            --message-sent: #DCF8C6;
+            --message-received: #FFFFFF;
+            --text-dark: #303030;
+            --text-light: #757575;
+            --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .config-panel {
+            width: 300px;
+            background: var(--whatsapp-dark);
+            color: white;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .config-panel h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .status-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .toggle-btn {
+            background: var(--whatsapp-green);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .toggle-btn:hover {
+            background: #1ebe5d;
+            transform: translateY(-2px);
+        }
+
+        .toggle-btn.occupied {
+            background: #ff6b6b;
+        }
+
+        .toggle-btn.occupied:hover {
+            background: #ff5252;
+        }
+
+        .services-config {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .service-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .service-item input {
+            width: 20px;
+            height: 20px;
+        }
+
+        .service-item label {
+            flex: 1;
+        }
+
+        .preview-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #e5ddd5;
+            position: relative;
+        }
+
+        .chat-header {
+            background: var(--whatsapp-dark);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chat-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .chat-header-info h3 {
+            font-size: 1.1rem;
+        }
+
+        .chat-header-info p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background-image: url('https://web.whatsapp.com/img/bg-chat-tile-light_686b98c9fdffef3f63127759e2057750.png');
+            background-repeat: repeat;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 7.5px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.received {
+            background: var(--message-received);
+            align-self: flex-start;
+            box-shadow: var(--shadow);
+        }
+
+        .message.sent {
+            background: var(--message-sent);
+            align-self: flex-end;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 10px 15px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            background: #f0f0f0;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .send-btn {
+            background: var(--whatsapp-green);
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .send-btn:hover {
+            background: #1ebe5d;
+        }
+
+        .code-preview {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .code-preview h3 {
+            margin-bottom: 10px;
+            color: var(--whatsapp-green);
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .instructions h3 {
+            margin-bottom: 10px;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+            font-size: 0.9rem;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--whatsapp-green);
+        }
+
+        .status-dot.occupied {
+            background: #ff6b6b;
+        }
+
+        .project-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .project-info h3 {
+            margin-bottom: 10px;
+        }
+
+        .project-info textarea {
+            width: 100%;
+            height: 80px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            resize: none;
+            margin-bottom: 10px;
+        }
+
+        .save-btn {
+            background: var(--whatsapp-light);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .save-btn:hover {
+            background: #0d7a6e;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .config-panel {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="config-panel">
+            <h2><i class="fas fa-robot"></i> Configuración del Bot</h2>
+            
+            <div class="status-toggle">
+                <h3>Estado de Disponibilidad</h3>
+                <p>Define si estás disponible para nuevos proyectos</p>
+                <button id="statusToggle" class="toggle-btn">
+                    <i class="fas fa-check-circle"></i> Disponible
+                </button>
+                <div class="status-indicator">
+                    <div id="statusDot" class="status-dot"></div>
+                    <span id="statusText">Disponible para nuevos proyectos</span>
+                </div>
+            </div>
+            
+            <div class="services-config">
+                <h3>Servicios Ofrecidos</h3>
+                <div class="service-item">
+                    <input type="checkbox" id="web" checked>
+                    <label for="web">Página web</label>
+                </div>
+                <div class="service-item">
+                    <input type="checkbox" id="mobile" checked>
+                    <label for="mobile">Aplicación móvil</label>
+                </div>
+                <div class="service-item">
+                    <input type="checkbox" id="game" checked>
+                    <label for="game">Videojuego</label>
+                </div>
+                <div class="service-item">
+                    <input type="checkbox" id="other" checked>
+                    <label for="other">Otro trabajo de programación</label>
+                </div>
+            </div>
+            
+            <div class="project-info">
+                <h3>Información del Proyecto</h3>
+                <textarea id="projectDetails" placeholder="Detalles adicionales que quieras solicitar a los clientes..."></textarea>
+                <button class="save-btn" id="saveProjectInfo">Guardar</button>
+            </div>
+            
+            <div class="instructions">
+                <h3>Instrucciones</h3>
+                <ul>
+                    <li>Configura tu estado de disponibilidad</li>
+                    <li>Selecciona los servicios que ofreces</li>
+                    <li>Prueba el bot en el panel de chat</li>
+                    <li>Implementa el código en tu servidor</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="preview-section">
+            <div class="chat-header">
+                <img src="https://ui-avatars.com/api/?name=Rodrigo+J&background=10b981&color=fff" alt="Avatar">
+                <div class="chat-header-info">
+                    <h3>Rodrigo - Servicios de Programación</h3>
+                    <p>Asistente virtual</p>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="message received">
+                    ¡Hola! Soy tu asistente virtual. ¿En qué puedo ayudarte con tus proyectos de programación?
+                    <div class="message-time">10:00</div>
+                </div>
+            </div>
+            
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="Escribe un mensaje...">
+                <button class="send-btn" id="sendMessage">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado del bot
+        let isAvailable = true;
+        let conversationStep = 0;
+        let selectedService = '';
+        let clientInfo = {
+            name: '',
+            projectType: '',
+            details: ''
+        };
+
+        // Elementos del DOM
+        const statusToggle = document.getElementById('statusToggle');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendMessage = document.getElementById('sendMessage');
+        const saveProjectInfo = document.getElementById('saveProjectInfo');
+
+        // Inicializar la aplicación
+        function init() {
+            setupEventListeners();
+            // Mostrar mensaje inicial del bot
+            setTimeout(() => {
+                addBotMessage(getAvailabilityMessage());
+                setTimeout(showServiceOptions, 1000);
+            }, 1000);
+        }
+
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Toggle de estado
+            statusToggle.addEventListener('click', toggleAvailability);
+            
+            // Enviar mensaje
+            sendMessage.addEventListener('click', handleUserMessage);
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleUserMessage();
+                }
+            });
+            
+            // Guardar información del proyecto
+            saveProjectInfo.addEventListener('click', saveProjectDetails);
+        }
+
+        // Cambiar estado de disponibilidad
+        function toggleAvailability() {
+            isAvailable = !isAvailable;
+            
+            if (isAvailable) {
+                statusToggle.innerHTML = '<i class="fas fa-check-circle"></i> Disponible';
+                statusToggle.classList.remove('occupied');
+                statusDot.classList.remove('occupied');
+                statusText.textContent = 'Disponible para nuevos proyectos';
+            } else {
+                statusToggle.innerHTML = '<i class="fas fa-pause-circle"></i> Ocupado';
+                statusToggle.classList.add('occupied');
+                statusDot.classList.add('occupied');
+                statusText.textContent = 'No disponible temporalmente';
+            }
+            
+            // Si hay una conversación en curso, actualizar el mensaje del bot
+            if (conversationStep === 0) {
+                addBotMessage(getAvailabilityMessage());
+            }
+        }
+
+        // Obtener mensaje de disponibilidad
+        function getAvailabilityMessage() {
+            if (isAvailable) {
+                return "✨ ¡Hola! En este momento estoy disponible para tomar nuevos proyectos de programación.";
+            } else {
+                return "😴 Hola, gracias por contactarme. Actualmente no estoy disponible para nuevos proyectos, pero puedes dejarme tu información y me pondré en contacto cuando tenga disponibilidad.";
+            }
+        }
+
+        // Mostrar opciones de servicios
+        function showServiceOptions() {
+            if (!isAvailable) return;
+            
+            const services = getSelectedServices();
+            let optionsHTML = '<div class="options">';
+            
+            services.forEach(service => {
+                let icon = '';
+                switch(service) {
+                    case 'Página web': icon = 'fas fa-globe'; break;
+                    case 'Aplicación móvil': icon = 'fas fa-mobile-alt'; break;
+                    case 'Videojuego': icon = 'fas fa-gamepad'; break;
+                    case 'Otro trabajo de programación': icon = 'fas fa-code'; break;
+                }
+                
+                optionsHTML += `
+                    <button class="option-btn service-option" data-service="${service}">
+                        <i class="${icon}"></i> ${service}
+                    </button>
+                `;
+            });
+            
+            optionsHTML += '</div>';
+            
+            addBotMessage("¿Qué tipo de proyecto quieres hacer?", optionsHTML);
+            
+            // Agregar event listeners a los botones de opciones
+            setTimeout(() => {
+                document.querySelectorAll('.service-option').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        selectedService = e.target.closest('.service-option').dataset.service;
+                        handleServiceSelection(selectedService);
+                    });
+                });
+            }, 100);
+        }
+
+        // Obtener servicios seleccionados
+        function getSelectedServices() {
+            const services = [];
+            if (document.getElementById('web').checked) services.push('Página web');
+            if (document.getElementById('mobile').checked) services.push('Aplicación móvil');
+            if (document.getElementById('game').checked) services.push('Videojuego');
+            if (document.getElementById('other').checked) services.push('Otro trabajo de programación');
+            return services;
+        }
+
+        // Manejar selección de servicio
+        function handleServiceSelection(service) {
+            clientInfo.projectType = service;
+            conversationStep = 1;
+            
+            addUserMessage(service);
+            
+            setTimeout(() => {
+                addBotMessage(`Excelente, has seleccionado: <strong>${service}</strong>.`);
+                
+                setTimeout(() => {
+                    const projectDetails = document.getElementById('projectDetails').value || 
+                        "Por favor, cuéntame más detalles sobre tu proyecto. ¿Qué funcionalidades necesitas? ¿Tienes algún plazo específico?";
+                    
+                    addBotMessage(projectDetails);
+                    
+                    setTimeout(() => {
+                        addBotMessage("También me gustaría saber tu nombre para poder dirigirme a ti correctamente. ¿Cómo te llamas?");
+                        conversationStep = 2;
+                    }, 1000);
+                }, 1000);
+            }, 1000);
+        }
+
+        // Manejar mensajes del usuario
+        function handleUserMessage() {
+            const message = messageInput.value.trim();
+            if (message === '') return;
+            
+            addUserMessage(message);
+            messageInput.value = '';
+            
+            // Procesar según el paso de la conversación
+            switch(conversationStep) {
+                case 0: // Inicio
+                    if (isAvailable) {
+                        setTimeout(showServiceOptions, 1000);
+                    }
+                    break;
+                    
+                case 2: // Esperando nombre
+                    clientInfo.name = message;
+                    conversationStep = 3;
+                    
+                    setTimeout(() => {
+                        addBotMessage(`Mucho gusto, ${clientInfo.name}.`);
+                        
+                        setTimeout(() => {
+                            addBotMessage("Perfecto, ya tengo la información básica de tu proyecto. En breve me pondré en contacto contigo para discutir los detalles y proporcionarte un presupuesto.");
+                            
+                            setTimeout(() => {
+                                addBotMessage("¿Hay algo más en lo que pueda ayudarte?", 
+                                    `<div class="options">
+                                        <button class="option-btn" id="yesHelp">Sí, tengo otra consulta</button>
+                                        <button class="option-btn" id="noHelp">No, eso es todo por ahora</button>
+                                    </div>`
+                                );
+                                
+                                setTimeout(() => {
+                                    document.getElementById('yesHelp').addEventListener('click', () => {
+                                        conversationStep = 0;
+                                        addUserMessage("Sí, tengo otra consulta");
+                                        setTimeout(() => {
+                                            addBotMessage(getAvailabilityMessage());
+                                            setTimeout(showServiceOptions, 1000);
+                                        }, 1000);
+                                    });
+                                    
+                                    document.getElementById('noHelp').addEventListener('click', () => {
+                                        addUserMessage("No, eso es todo por ahora");
+                                        setTimeout(() => {
+                                            addBotMessage("¡Genial! Ha sido un placer ayudarte. Estaré en contacto pronto. ¡Que tengas un excelente día! 😊");
+                                        }, 1000);
+                                    });
+                                }, 100);
+                            }, 1000);
+                        }, 1000);
+                    }, 1000);
+                    break;
+                    
+                case 3: // Conversación finalizada
+                    // Reiniciar conversación
+                    conversationStep = 0;
+                    selectedService = '';
+                    clientInfo = { name: '', projectType: '', details: '' };
+                    
+                    setTimeout(() => {
+                        addBotMessage(getAvailabilityMessage());
+                        setTimeout(showServiceOptions, 1000);
+                    }, 1000);
+                    break;
+            }
+        }
+
+        // Agregar mensaje del bot
+        function addBotMessage(text, html = '') {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message received';
+            messageDiv.innerHTML = `
+                ${text}
+                <div class="message-time">${getCurrentTime()}</div>
+                ${html}
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Agregar mensaje del usuario
+        function addUserMessage(text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message sent';
+            messageDiv.innerHTML = `
+                ${text}
+                <div class="message-time">${getCurrentTime()}</div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Obtener hora actual
+        function getCurrentTime() {
+            const now = new Date();
+            return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+        }
+
+        // Guardar detalles del proyecto
+        function saveProjectDetails() {
+            const details = document.getElementById('projectDetails').value;
+            alert('Información del proyecto guardada correctamente.');
+        }
+
+        // Inicializar la aplicación
+        init();
+    </script>
+</body>
+</html>
