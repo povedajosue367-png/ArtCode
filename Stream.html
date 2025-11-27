@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yeguas - Ideas para Stream</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #8B4513;
+            --secondary-color: #D2691E;
+            --dark-bg: #121212;
+            --darker-bg: #0a0a0a;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --accent-color: #A0522D;
+            --like-color: #4CAF50;
+            --dislike-color: #f44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .auth-section {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .auth-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .google-btn {
+            background-color: #DB4437;
+            color: white;
+        }
+        
+        .facebook-btn {
+            background-color: #4267B2;
+            color: white;
+        }
+        
+        .demo-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .idea-form {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #2d2d2d;
+            border: 1px solid #444;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: var(--text-color);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .ideas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .idea-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .idea-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .idea-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .idea-content {
+            padding: 1.5rem;
+        }
+        
+        .idea-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+        
+        .idea-description {
+            color: #b0b0b0;
+            margin-bottom: 1rem;
+        }
+        
+        .idea-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #444;
+            padding-top: 1rem;
+        }
+        
+        .vote-section {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .vote-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 5px;
+        }
+        
+        .like-btn:hover, .like-btn.active {
+            color: var(--like-color);
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+        
+        .dislike-btn:hover, .dislike-btn.active {
+            color: var(--dislike-color);
+            background-color: rgba(244, 67, 54, 0.1);
+        }
+        
+        .vote-count {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .supporters {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #888;
+        }
+        
+        .supporters-list {
+            margin-top: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .supporter-tag {
+            background-color: rgba(139, 69, 19, 0.2);
+            padding: 0.25rem 0.5rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        footer {
+            background-color: var(--darker-bg);
+            color: #aaa;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background-color: var(--like-color);
+        }
+        
+        .notification.error {
+            background-color: var(--dislike-color);
+        }
+        
+        @media (max-width: 768px) {
+            .auth-buttons {
+                flex-direction: column;
+            }
+            
+            .ideas-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Yeguas</h1>
+            <p>Bienvenida a la página de ideas para stream</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <section class="auth-section">
+            <h2>Inicia sesión para compartir tus ideas</h2>
+            <div class="auth-buttons">
+                <button class="auth-btn google-btn" id="googleLogin">
+                    <i class="fab fa-google"></i>
+                    <span>Iniciar sesión con Google</span>
+                </button>
+                <button class="auth-btn facebook-btn" id="facebookLogin">
+                    <i class="fab fa-facebook"></i>
+                    <span>Iniciar sesión con Facebook</span>
+                </button>
+                <button class="auth-btn demo-btn" id="demoLogin">
+                    <i class="fas fa-user"></i>
+                    <span>Modo Demo</span>
+                </button>
+            </div>
+            <div class="user-info" id="userInfo" style="display: none;">
+                <img src="" alt="Avatar" class="user-avatar" id="userAvatar">
+                <div>
+                    <p id="userName"></p>
+                    <button id="logoutBtn">Cerrar sesión</button>
+                </div>
+            </div>
+        </section>
+        
+        <section class="idea-form" id="ideaForm" style="display: none;">
+            <h2>Comparte tu idea para el stream</h2>
+            <form id="submitIdeaForm">
+                <div class="form-group">
+                    <label for="ideaTitle">Título de la idea</label>
+                    <input type="text" id="ideaTitle" required placeholder="Ej: Entrenamiento de yeguas jóvenes">
+                </div>
+                <div class="form-group">
+                    <label for="ideaDescription">Descripción de tu idea</label>
+                    <textarea id="ideaDescription" required placeholder="Describe tu idea de stream sobre yeguas..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="ideaImage">Imagen (URL)</label>
+                    <input type="url" id="ideaImage" placeholder="https://ejemplo.com/imagen.jpg">
+                    <small style="color: #aaa;">Puedes usar: https://images.unsplash.com/photo-1547036967-23b11aee7f8c</small>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Enviar idea
+                </button>
+            </form>
+        </section>
+        
+        <section class="ideas-section">
+            <h2>Ideas para stream</h2>
+            <div id="ideasCounter" style="margin-bottom: 1rem; color: #aaa;"></div>
+            <div class="ideas-grid" id="ideasGrid">
+                <!-- Las ideas se cargarán aquí dinámicamente -->
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Yeguas - Página de votación de ideas para stream</p>
+        </div>
+    </footer>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Estado de la aplicación
+        let currentUser = null;
+        let ideas = JSON.parse(localStorage.getItem('yeguas-ideas')) || [];
+        let userVotes = JSON.parse(localStorage.getItem('yeguas-votes')) || {};
+
+        // Si no hay ideas, cargar ejemplos
+        if (ideas.length === 0) {
+            ideas = [
+                {
+                    id: 1,
+                    title: "Cuidado diario de yeguas",
+                    description: "Mostrar la rutina diaria de cuidado de yeguas, desde la alimentación hasta el ejercicio. Incluir consejos sobre el mantenimiento de establos y técnicas de aseo.",
+                    image: "https://images.unsplash.com/photo-1547036967-23b11aee7f8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+                    likes: 15,
+                    dislikes: 2,
+                    supporters: ["María González", "Carlos López", "Ana Martínez"],
+                    author: "Usuario Demo",
+                    timestamp: new Date().getTime() - 86400000 // Hace 1 día
+                },
+                {
+                    id: 2,
+                    title: "Entrenamiento de yeguas jóvenes",
+                    description: "Técnicas para entrenar yeguas jóvenes y prepararlas para competiciones. Enfocarse en métodos de entrenamiento respetuosos y efectivos.",
+                    image: "https://images.unsplash.com/photo-1598974357801-cbca100e65d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+                    likes: 23,
+                    dislikes: 1,
+                    supporters: ["Pedro Ramírez", "Laura Sánchez", "Javier Ruiz", "Elena Castro"],
+                    author: "Usuario Demo",
+                    timestamp: new Date().getTime() - 172800000 // Hace 2 días
+                },
+                {
+                    id: 3,
+                    title: "Salud y veterinaria equina",
+                    description: "Consejos sobre salud preventiva y cuidados veterinarios específicos para yeguas. Incluir información sobre vacunas, desparasitación y detección temprana de problemas.",
+                    image: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+                    likes: 18,
+                    dislikes: 3,
+                    supporters: ["Miguel Ángel", "Sofía Herrera", "David Mendoza"],
+                    author: "Usuario Demo",
+                    timestamp: new Date().getTime() - 259200000 // Hace 3 días
+                }
+            ];
+            saveIdeas();
+        }
+
+        // Elementos del DOM
+        const googleLoginBtn = document.getElementById('googleLogin');
+        const facebookLoginBtn = document.getElementById('facebookLogin');
+        const demoLoginBtn = document.getElementById('demoLogin');
+        const userInfo = document.getElementById('userInfo');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const ideaForm = document.getElementById('ideaForm');
+        const submitIdeaForm = document.getElementById('submitIdeaForm');
+        const ideasGrid = document.getElementById('ideasGrid');
+        const ideasCounter = document.getElementById('ideasCounter');
+        const notification = document.getElementById('notification');
+
+        // Funciones de utilidad
+        function saveIdeas() {
+            localStorage.setItem('yeguas-ideas', JSON.stringify(ideas));
+        }
+
+        function saveVotes() {
+            localStorage.setItem('yeguas-votes', JSON.stringify(userVotes));
+        }
+
+        function showNotification(message, type = 'success') {
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        // Funciones de autenticación
+        function loginWithGoogle() {
+            // En una aplicación real, aquí integrarías con la API de Google
+            currentUser = {
+                name: "Usuario Google",
+                avatar: "https://via.placeholder.com/50/DB4437/FFFFFF?text=G",
+                id: "google-" + Math.random().toString(36).substring(2, 9)
+            };
+            updateUI();
+            showNotification('¡Sesión iniciada con Google!');
+        }
+
+        function loginWithFacebook() {
+            // En una aplicación real, aquí integrarías con la API de Facebook
+            currentUser = {
+                name: "Usuario Facebook",
+                avatar: "https://via.placeholder.com/50/4267B2/FFFFFF?text=F",
+                id: "facebook-" + Math.random().toString(36).substring(2, 9)
+            };
+            updateUI();
+            showNotification('¡Sesión iniciada con Facebook!');
+        }
+
+        function loginDemo() {
+            currentUser = {
+                name: "Usuario Demo",
+                avatar: "https://via.placeholder.com/50/8B4513/FFFFFF?text=U",
+                id: "demo-" + Math.random().toString(36).substring(2, 9)
+            };
+            updateUI();
+            showNotification('¡Modo demo activado!');
+        }
+
+        function logout() {
+            currentUser = null;
+            updateUI();
+            showNotification('Sesión cerrada correctamente');
+        }
+
+        function updateUI() {
+            if (currentUser) {
+                userInfo.style.display = 'flex';
+                userName.textContent = currentUser.name;
+                userAvatar.src = currentUser.avatar;
+                ideaForm.style.display = 'block';
+            } else {
+                userInfo.style.display = 'none';
+                ideaForm.style.display = 'none';
+            }
+            updateIdeasCounter();
+        }
+
+        // Manejo de envío de ideas
+        submitIdeaForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                showNotification('Debes iniciar sesión para enviar ideas', 'error');
+                return;
+            }
+            
+            const title = document.getElementById('ideaTitle').value;
+            const description = document.getElementById('ideaDescription').value;
+            const image = document.getElementById('ideaImage').value || 'https://images.unsplash.com/photo-1506812574058-fc75fa93fead?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80';
+            
+            const newIdea = {
+                id: Date.now(),
+                title,
+                description,
+                image,
+                likes: 0,
+                dislikes: 0,
+                supporters: [currentUser.name],
+                author: currentUser.name,
+                timestamp: new Date().getTime()
+            };
+            
+            ideas.unshift(newIdea);
+            saveIdeas();
+            renderIdeas();
+            submitIdeaForm.reset();
+            
+            showNotification('¡Tu idea ha sido enviada!');
+        });
+
+        // Funciones de votación
+        function vote(ideaId, type) {
+            if (!currentUser) {
+                showNotification('Debes iniciar sesión para votar', 'error');
+                return;
+            }
+            
+            const idea = ideas.find(i => i.id === ideaId);
+            if (!idea) return;
+            
+            const userVoteKey = `${currentUser.id}-${ideaId}`;
+            const previousVote = userVotes[userVoteKey];
+            
+            // Si ya votó igual, quitar el voto
+            if (previousVote === type) {
+                idea[type === 'like' ? 'likes' : 'dislikes']--;
+                delete userVotes[userVoteKey];
+                
+                // Remover de supporters si es like
+                if (type === 'like') {
+                    const index = idea.supporters.indexOf(currentUser.name);
+                    if (index > -1) {
+                        idea.supporters.splice(index, 1);
+                    }
+                }
+            } else {
+                // Si ya votó diferente, cambiar el voto
+                if (previousVote) {
+                    idea[previousVote === 'like' ? 'likes' : 'dislikes']--;
+                    
+                    // Remover de supporters si el voto anterior era like
+                    if (previousVote === 'like') {
+                        const index = idea.supporters.indexOf(currentUser.name);
+                        if (index > -1) {
+                            idea.supporters.splice(index, 1);
+                        }
+                    }
+                }
+                
+                // Añadir nuevo voto
+                idea[type === 'like' ? 'likes' : 'dislikes']++;
+                userVotes[userVoteKey] = type;
+                
+                // Añadir a supporters si es like
+                if (type === 'like' && !idea.supporters.includes(currentUser.name)) {
+                    idea.supporters.push(currentUser.name);
+                }
+            }
+            
+            saveIdeas();
+            saveVotes();
+            renderIdeas();
+            
+            const voteAction = previousVote === type ? 'eliminado' : (type === 'like' ? 'me gusta' : 'no me gusta');
+            showNotification(`¡Voto ${voteAction} registrado!`);
+        }
+
+        // Renderizar ideas
+        function renderIdeas() {
+            ideasGrid.innerHTML = '';
+            
+            if (ideas.length === 0) {
+                ideasGrid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1; padding: 2rem;">No hay ideas todavía. ¡Sé el primero en compartir una!</p>';
+                return;
+            }
+            
+            ideas.forEach(idea => {
+                const ideaCard = document.createElement('div');
+                ideaCard.className = 'idea-card';
+                
+                const userVoteKey = currentUser ? `${currentUser.id}-${idea.id}` : null;
+                const userVote = userVoteKey ? userVotes[userVoteKey] : null;
+                
+                // Crear lista de seguidores
+                let supportersHTML = '';
+                if (idea.supporters.length > 0) {
+                    supportersHTML = `
+                    <div class="supporters">
+                        <strong>Personas que apoyan esta idea:</strong>
+                        <div class="supporters-list">
+                            ${idea.supporters.map(supporter => 
+                                `<span class="supporter-tag">${supporter}</span>`
+                            ).join('')}
+                        </div>
+                    </div>`;
+                }
+                
+                // Estadísticas
+                const statsHTML = `
+                <div class="stats">
+                    <span><i class="far fa-user"></i> ${idea.author}</span>
+                    <span><i class="far fa-calendar"></i> ${formatDate(idea.timestamp)}</span>
+                </div>`;
+                
+                ideaCard.innerHTML = `
+                    <img src="${idea.image}" alt="${idea.title}" class="idea-image" onerror="this.src='https://images.unsplash.com/photo-1506812574058-fc75fa93fead?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80'">
+                    <div class="idea-content">
+                        <h3 class="idea-title">${idea.title}</h3>
+                        <p class="idea-description">${idea.description}</p>
+                        ${statsHTML}
+                        <div class="idea-footer">
+                            <div class="vote-section">
+                                <button class="vote-btn like-btn ${userVote === 'like' ? 'active' : ''}" data-id="${idea.id}" data-type="like">
+                                    <i class="fas fa-thumbs-up"></i> 
+                                    <span class="vote-count">${idea.likes}</span>
+                                </button>
+                                <button class="vote-btn dislike-btn ${userVote === 'dislike' ? 'active' : ''}" data-id="${idea.id}" data-type="dislike">
+                                    <i class="fas fa-thumbs-down"></i> 
+                                    <span class="vote-count">${idea.dislikes}</span>
+                                </button>
+                            </div>
+                        </div>
+                        ${supportersHTML}
+                    </div>
+                `;
+                ideasGrid.appendChild(ideaCard);
+            });
+            
+            // Agregar event listeners a los botones de voto
+            document.querySelectorAll('.vote-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const ideaId = parseInt(this.getAttribute('data-id'));
+                    const voteType = this.getAttribute('data-type');
+                    vote(ideaId, voteType);
+                });
+            });
+            
+            updateIdeasCounter();
+        }
+
+        function updateIdeasCounter() {
+            const totalIdeas = ideas.length;
+            const totalVotes = ideas.reduce((sum, idea) => sum + idea.likes + idea.dislikes, 0);
+            ideasCounter.textContent = `Mostrando ${totalIdeas} ideas con un total de ${totalVotes} votos`;
+        }
+
+        // Event listeners
+        googleLoginBtn.addEventListener('click', loginWithGoogle);
+        facebookLoginBtn.addEventListener('click', loginWithFacebook);
+        demoLoginBtn.addEventListener('click', loginDemo);
+        logoutBtn.addEventListener('click', logout);
+
+        // Inicializar la aplicación
+        renderIdeas();
+    </script>
+</body>
+</html>
